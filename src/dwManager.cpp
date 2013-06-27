@@ -61,7 +61,7 @@ DWManager::increaseDWCount(unsigned int fileId, unsigned int serverId) {
     for (unsigned int i = 0; i < DWFileList.size(); i++) {
         if (DWFileList[i]->fileId == fileId && DWFileList[i]->serverId == serverId) {
             DWFileList[i]->c1++;
-            logStr = " the count of file[" + numToString(fileId) + "] in server[" + numToString(serverId) + "] is "
+            logStr = " the count of file " + numToString(fileId) + " in server[" + numToString(serverId) + "] is "
                     + numToString(DWFileList[i]->c1);
             break;
         }
@@ -132,7 +132,7 @@ DWManager::duplicateMethod(unsigned int serverId) {
             needSpreadFile = DWFileList[i]->fileId;
         }
     }
-    logStr = "server[" + numToString(serverId) + "] chosed file[" + numToString(needSpreadFile) + "] to spread";
+    logStr = "server[" + numToString(serverId) + "] chosed file " + numToString(needSpreadFile) + " to spread";
     serverLog.writeResourceLog(logStr);
     //choose the machine that have the minLoad and don't have the file
     vector<unsigned int > containList;
@@ -173,7 +173,7 @@ DWManager::duplicateMethod(unsigned int serverId) {
             DWFileList[i]->c1 = 0;
         }
     }
-    logStr = "reset the count of file[" + numToString(needSpreadFile) + "] to 0 in all server";
+    logStr = "reset the count of file " + numToString(needSpreadFile) + " to 0 in all server";
     serverLog.writeResourceLog(logStr);
     return 0;
 }
@@ -193,7 +193,7 @@ DWManager::deleteMethod(unsigned int serverId) {
             needDeleteFile = DWFileList[i]->fileId;
         }
     }
-    string logStr = "server[" + numToString(serverId) + "] chose file[" + numToString(needDeleteFile) + "] to delete";
+    string logStr = "server[" + numToString(serverId) + "] chose file " + numToString(needDeleteFile) + " to delete";
     serverLog.writeResourceLog(logStr);
     deleteServer(needDeleteFile, serverId);
     lb->deleteFileFromSubServer(needDeleteFile, serverId);

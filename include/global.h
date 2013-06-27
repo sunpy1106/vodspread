@@ -10,6 +10,7 @@
 #include<math.h>
 #include<pthread.h>
 #include<sys/epoll.h>
+#include<assert.h>
 #include "../lib/sock.h"
 #include "../lib/error.h"
 #include "../lib/util.h"

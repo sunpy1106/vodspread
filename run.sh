@@ -9,7 +9,7 @@ for zipf in ${zipfRange[@]}; do
     echo $zipf
 done
 
-algorithm_set=( DR RE LFRU LRFU DW ) 
+algorithm_set=(  DR  ) 
 
 for algorithm in ${algorithm_set[@]};do
     echo $algorithm
@@ -22,11 +22,11 @@ for lambda in ${poisson_set[@]}; do
 done
 
 #for DW LFRU DR
-period_set=(  20 40  80  )
+period_set=(  20 )
 #for LRFU
-lambda_set=(1  700 1000)
+lambda_set=( 700 1000)
 #for DR
-beta_set=(0 10)
+beta_set=(10)
 #for DW LFRU LRFU
 thresh_set=(800 850 900 950)
 sed -i 's/\(clientNumber = \).*/\1 '$client_number'/g' $clientConfig

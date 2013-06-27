@@ -55,7 +55,7 @@ LFRUManager::readFile(unsigned int fileId, unsigned int serverId) {
         if (LFRUFileList[i]->fileId == fileId && LFRUFileList[i]->serverId == serverId) {
             LFRUFileList[i]->count++;
             gettimeofday(&(LFRUFileList[i]->vtime), NULL);
-            logStr = " the count of file[" + numToString(fileId) + "] in server[" + numToString(serverId) + "] is "
+            logStr = " the count of file " + numToString(fileId) + " in server[" + numToString(serverId) + "] is "
                     + numToString(LFRUFileList[i]->count);
             break;
         }

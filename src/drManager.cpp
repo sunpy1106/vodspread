@@ -306,7 +306,7 @@ DRManager::proAllocate() {
             } else {
                 unsigned int l = 0;
                 double m = curFilePro;
-                while (m > 0) {
+                while (m > 0 && l < subServerNum) {
                     curPro = getSumPro(serProList.at(l));
                     if (curPro >= m - curFilePro / serNum - averPro) {
                         proMatrix[serProList[l]][curFileId] = curFilePro / serNum + averPro - curPro;
@@ -426,8 +426,11 @@ DRManager::checkMatrix() {
             serverLog.writeResourceLog(oslogStr.str());
             if (maxIncrease > 0)
                 duplicateMethod(needSpreadFile);
-            if (minIncrease < 0)
+            if (minIncrease < 0){
+                printFileInfo();
+                printProMatrix();
                 deleteMethod(needDeleteFile);
+            }
         }
     }
     return 0;
@@ -558,6 +561,7 @@ DRManager::duplicateMethod(unsigned int fileId) {
     DRFileList[fileId]->copys++;
     logStr = "re-computer the proMatrix;";
     serverLog.writeResourceLog(logStr);
+    printFileInfo();
     proAllocate();
     return 0;
 }
@@ -566,16 +570,23 @@ DRManager::duplicateMethod(unsigned int fileId) {
  */
 int
 DRManager::deleteMethod(unsigned int fileId) {
+    if(DRFileList[fileId]->copys <=1)
+        return -1;
+    ostringstream oslogStr;
     for (unsigned int i = 0; i < subServerNum; i++) {
+        oslogStr.str("");
+        oslogStr<<" pro of file "<<fileId << " in server "<<i<<" is "<<proMatrix[i][fileId]<<endl;
+        serverLog.writeResourceLog(oslogStr.str());
         if (proMatrix[i][fileId] == 0.0) {
             deleteServer(fileId, i);
             lb->deleteFileFromSubServer(fileId, i);
             DRFileList[fileId]->copys--;
+            break;
         }
     }
-    string logStr = "re-computer the proMatrix;";
+    /*string logStr = "re-computer the proMatrix;";
     serverLog.writeResourceLog(logStr);
-    proAllocate();
+    proAllocate();*/
     return 0;
 }
 

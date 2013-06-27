@@ -16,17 +16,22 @@ FileInfo::~FileInfo() {
 
 int
 FileInfo::addNewServer(unsigned int serverId) {
+    ostringstream logStr;
     pthread_mutex_lock(&file_mutex);
     serverList.push_back(serverId);
+    logStr<<"file "<<fileId<< " now in  server "<< serverId<<endl;
     std::sort(serverList.begin(),serverList.end());
     pthread_mutex_unlock(&file_mutex);
+    serverLog.writeResourceLog(logStr.str());
     return 0;
 }
 
 int
 FileInfo::deleteServer(unsigned int serverId) {
     vector<unsigned int>::iterator it;
+    ostringstream logStr;
     pthread_mutex_lock(&file_mutex);
+    logStr<<"delete file "<<fileId<<" from server "<<serverId<<endl;
     for (it = serverList.begin(); it != serverList.end(); it++) {
         if (*it == serverId) {
             serverList.erase(it);
@@ -34,6 +39,7 @@ FileInfo::deleteServer(unsigned int serverId) {
         }
     }
     pthread_mutex_unlock(&file_mutex);
+    serverLog.writeResourceLog(logStr.str());
     return 0;
 
 }
@@ -42,6 +48,7 @@ int
 FileInfo::getServerList(vector<unsigned int> &containList) {
     pthread_mutex_lock(&file_mutex);
     containList = serverList;
+    assert(serverList.size()>=1);
     pthread_mutex_unlock(&file_mutex);
     return 0;
 }
