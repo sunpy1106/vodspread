@@ -3,6 +3,10 @@
 #include"../include/global.h"
 #include "config.h"
 #include "resourceManager.h"
+#include "drManager.h"
+#include "lfruManager.h"
+#include "lrfuManager.h"
+#include "dwManager.h"
 
 class SubServer {
 public:

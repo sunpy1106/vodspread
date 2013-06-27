@@ -6,7 +6,7 @@ DFLAGS= -lpthread -I/usr/local/include -L/usr/local/lib   -lgslcblas -lm
 LIB=error.o sock.o util.o config.o vodlog.o
 
 CLIENT=client.o  clientEntrance.o 
-ResouceManager= resourceManager.o 
+ResouceManager= resourceManager.o drManager.o dwManager.o lfruManager.o lrfuManager.o 
 SERVER=server.o serverEntrance.o  
 
 target=  server client
