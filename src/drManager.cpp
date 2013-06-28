@@ -4,7 +4,6 @@
 #include "server.h"
 #include<sstream>
 
-
 /**********************************************************************
 //this part for DRManager
  **********************************************************************/
@@ -422,11 +421,12 @@ DRManager::checkMatrix() {
                     needDeleteFile = i;
                 }
             }
+            oslogStr.str("");
             oslogStr << "maxIncrease = " << maxIncrease << ",minIncrease = " << minIncrease << endl;
             serverLog.writeResourceLog(oslogStr.str());
             if (maxIncrease > 0)
                 duplicateMethod(needSpreadFile);
-            if (minIncrease < 0){
+            if (minIncrease < 0) {
                 printFileInfo();
                 printProMatrix();
                 deleteMethod(needDeleteFile);
@@ -517,15 +517,23 @@ DRManager::getMinPlayRateServer(const vector<unsigned int> &noList) {
     vector<unsigned int>::const_iterator it;
     double minPlayRate = 1.0;
     ostringstream oslogStr;
-    oslogStr << "the total play rate of some server:" << endl;
-    for (it = noList.begin(); it != noList.end(); it++) {
-        oslogStr << (*it) << " " << subSerPlayRate[*it] << endl;
-        if (subSerPlayRate[*it] < minPlayRate) {
-            minPlayRate = subSerPlayRate[*it];
-            chosedId = *it;
+    if (noList.size() == 0) {
+        oslogStr << "no sub server to spread" << endl;
+        serverLog.writeResourceLog(oslogStr.str());
+        lb->printFileList();
+    } else {
+        oslogStr << "the total play rate of some server:" << endl;
+        for (it = noList.begin(); it != noList.end(); it++) {
+            oslogStr << (*it) << " " << subSerPlayRate[*it] << endl;
+            if (subSerPlayRate[*it] < minPlayRate) {
+                minPlayRate = subSerPlayRate[*it];
+                chosedId = *it;
+            }
         }
+        serverLog.writeResourceLog(oslogStr.str());
+
     }
-    serverLog.writeResourceLog(oslogStr.str());
+    
     return chosedId;
 }
 
@@ -548,6 +556,7 @@ DRManager::duplicateMethod(unsigned int fileId) {
             noList.push_back(i);
         }
     }
+    this->printFileInfo();
     int targetServer = getMinPlayRateServer(noList);
     if (targetServer < 0) {
         cout << "no sub server to spread" << endl;
@@ -570,18 +579,20 @@ DRManager::duplicateMethod(unsigned int fileId) {
  */
 int
 DRManager::deleteMethod(unsigned int fileId) {
-    if(DRFileList[fileId]->copys <=1)
+    if (DRFileList[fileId]->copys <= 1)
         return -1;
+    this->printFileInfo();
     ostringstream oslogStr;
     for (unsigned int i = 0; i < subServerNum; i++) {
         oslogStr.str("");
-        oslogStr<<" pro of file "<<fileId << " in server "<<i<<" is "<<proMatrix[i][fileId]<<endl;
+        oslogStr << " pro of file " << fileId << " in server " << i << " is " << proMatrix[i][fileId] << endl;
         serverLog.writeResourceLog(oslogStr.str());
         if (proMatrix[i][fileId] == 0.0) {
             deleteServer(fileId, i);
             lb->deleteFileFromSubServer(fileId, i);
             DRFileList[fileId]->copys--;
-            break;
+            if(DRFileList[fileId]->copys == 1)
+                break;
         }
     }
     /*string logStr = "re-computer the proMatrix;";
